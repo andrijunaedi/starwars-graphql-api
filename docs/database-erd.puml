@@ -1,0 +1,109 @@
+@startuml Star Wars GraphQL API - Database ERD
+
+!theme plain
+skinparam linetype ortho
+skinparam packageStyle rectangle
+
+' Entity definitions
+entity "planets" as planets {
+  * **id** : INTEGER <<PK>>
+  --
+  * name : TEXT <<UNIQUE>>
+  climate : TEXT
+  terrain : TEXT
+}
+
+entity "characters" as characters {
+  * **id** : INTEGER <<PK>>
+  --
+  * name : TEXT <<UNIQUE>>
+  species : TEXT
+  home_planet_id : INTEGER <<FK>>
+}
+
+entity "starships" as starships {
+  * **id** : INTEGER <<PK>>
+  --
+  * name : TEXT <<UNIQUE>>
+  model : TEXT
+  manufacturer : TEXT
+}
+
+entity "films" as films {
+  * **id** : INTEGER <<PK>>
+  --
+  * title : TEXT <<UNIQUE>>
+  episode_id : INTEGER <<UNIQUE>>
+  director : TEXT
+  release_date : TEXT
+  opening_crawl : TEXT
+}
+
+' Junction tables for many-to-many relationships
+entity "character_starships" as char_ship {
+  * **character_id** : INTEGER <<PK,FK>>
+  * **starship_id** : INTEGER <<PK,FK>>
+}
+
+entity "film_characters" as film_char {
+  * **film_id** : INTEGER <<PK,FK>>
+  * **character_id** : INTEGER <<PK,FK>>
+}
+
+entity "film_planets" as film_planet {
+  * **film_id** : INTEGER <<PK,FK>>
+  * **planet_id** : INTEGER <<PK,FK>>
+}
+
+entity "film_starships" as film_ship {
+  * **film_id** : INTEGER <<PK,FK>>
+  * **starship_id** : INTEGER <<PK,FK>>
+}
+
+' Relationships
+' One-to-many: Planet -> Characters
+planets ||--o{ characters : "home_planet_id"
+
+' Many-to-many: Characters <-> Starships
+characters ||--o{ char_ship : "character_id"
+starships ||--o{ char_ship : "starship_id"
+
+' Many-to-many: Films <-> Characters
+films ||--o{ film_char : "film_id"
+characters ||--o{ film_char : "character_id"
+
+' Many-to-many: Films <-> Planets
+films ||--o{ film_planet : "film_id"
+planets ||--o{ film_planet : "planet_id"
+
+' Many-to-many: Films <-> Starships
+films ||--o{ film_ship : "film_id"
+starships ||--o{ film_ship : "starship_id"
+
+' Legend
+legend right
+  |= Symbol |= Meaning |
+  | **PK** | Primary Key |
+  | **FK** | Foreign Key |
+  | **UNIQUE** | Unique Constraint |
+  | * | Required Field |
+  | ||--o{ | One-to-Many |
+endlegend
+
+note as N1
+  **Star Wars GraphQL API Database Schema**
+  
+  **Main Entities:**
+  • Characters - Star Wars characters with species and home planet
+  • Planets - Planets in the Star Wars universe
+  • Starships - Spaceships with model and manufacturer info
+  • Films - Star Wars movies with episode details
+  
+  **Relationships:**
+  • Characters can have one home planet (optional)
+  • Characters can pilot multiple starships (many-to-many)
+  • Films can feature multiple characters, planets, and starships
+  • All film relationships are many-to-many through junction tables
+end note
+
+@enduml
