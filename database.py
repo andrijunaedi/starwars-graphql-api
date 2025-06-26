@@ -54,6 +54,51 @@ def init_db():
             FOREIGN KEY (starship_id) REFERENCES starships (id)
         )
     """)
+    
+    # Tabel films
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS films (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT UNIQUE NOT NULL,
+            episode_id INTEGER UNIQUE,
+            director TEXT,
+            release_date TEXT,
+            opening_crawl TEXT
+        )
+    """)
+    
+    # Tabel penghubung films-characters (many-to-many)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS film_characters (
+            film_id INTEGER,
+            character_id INTEGER,
+            PRIMARY KEY (film_id, character_id),
+            FOREIGN KEY (film_id) REFERENCES films (id),
+            FOREIGN KEY (character_id) REFERENCES characters (id)
+        )
+    """)
+    
+    # Tabel penghubung films-planets (many-to-many)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS film_planets (
+            film_id INTEGER,
+            planet_id INTEGER,
+            PRIMARY KEY (film_id, planet_id),
+            FOREIGN KEY (film_id) REFERENCES films (id),
+            FOREIGN KEY (planet_id) REFERENCES planets (id)
+        )
+    """)
+    
+    # Tabel penghubung films-starships (many-to-many)
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS film_starships (
+            film_id INTEGER,
+            starship_id INTEGER,
+            PRIMARY KEY (film_id, starship_id),
+            FOREIGN KEY (film_id) REFERENCES films (id),
+            FOREIGN KEY (starship_id) REFERENCES starships (id)
+        )
+    """)
 
     conn.commit()
     conn.close()

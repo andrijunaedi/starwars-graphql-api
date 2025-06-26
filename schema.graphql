@@ -5,6 +5,8 @@ type Query {
   planet(id: ID!): Planet
   allStarships: [Starship!]!
   starship(id: ID!): Starship
+  allFilms: [Film!]!
+  film(id: ID!): Film
 }
 
 type Mutation {
@@ -12,7 +14,25 @@ type Mutation {
   updatePlanet(input: UpdatePlanetInput!): Planet
   deletePlanet(id: ID!): Boolean
   createCharacter(input: CreateCharacterInput!): Character
+  updateCharacter(input: UpdateCharacterInput!): Character
+  deleteCharacter(id: ID!): Boolean
+  createStarship(input: CreateStarshipInput!): Starship
+  updateStarship(input: UpdateStarshipInput!): Starship
+  deleteStarship(id: ID!): Boolean
   assignStarship(input: AssignStarshipInput!): Character
+  
+  # Film mutations
+  createFilm(input: CreateFilmInput!): Film
+  updateFilm(input: UpdateFilmInput!): Film
+  deleteFilm(id: ID!): Boolean
+  
+  # Film relationship mutations
+  addCharacterToFilm(input: FilmCharacterInput!): Film
+  removeCharacterFromFilm(input: FilmCharacterInput!): Film
+  addPlanetToFilm(input: FilmPlanetInput!): Film
+  removePlanetFromFilm(input: FilmPlanetInput!): Film
+  addStarshipToFilm(input: FilmStarshipInput!): Film
+  removeStarshipFromFilm(input: FilmStarshipInput!): Film
 }
 
 input CreatePlanetInput {
@@ -34,8 +54,60 @@ input CreateCharacterInput {
   homePlanetId: Int
 }
 
+input UpdateCharacterInput {
+  id: ID!
+  name: String
+  species: String
+  homePlanetId: Int
+}
+
+input CreateStarshipInput {
+  name: String!
+  model: String
+  manufacturer: String
+}
+
+input UpdateStarshipInput {
+  id: ID!
+  name: String
+  model: String
+  manufacturer: String
+}
+
 input AssignStarshipInput {
   characterId: ID!
+  starshipId: ID!
+}
+
+input CreateFilmInput {
+  title: String!
+  episodeId: Int
+  director: String
+  releaseDate: String
+  openingCrawl: String
+}
+
+input UpdateFilmInput {
+  id: ID!
+  title: String
+  episodeId: Int
+  director: String
+  releaseDate: String
+  openingCrawl: String
+}
+
+input FilmCharacterInput {
+  filmId: ID!
+  characterId: ID!
+}
+
+input FilmPlanetInput {
+  filmId: ID!
+  planetId: ID!
+}
+
+input FilmStarshipInput {
+  filmId: ID!
   starshipId: ID!
 }
 
@@ -45,6 +117,7 @@ type Character {
   species: String
   homePlanet: Planet
   pilotedStarships: [Starship!]!
+  appearsIn: [Film!]!
 }
 
 type Planet {
@@ -53,6 +126,7 @@ type Planet {
   climate: String
   terrain: String
   residents: [Character!]!
+  appearsIn: [Film!]!
 }
 
 type Starship {
@@ -61,4 +135,17 @@ type Starship {
   model: String
   manufacturer: String
   pilots: [Character!]!
+  appearsIn: [Film!]!
+}
+
+type Film {
+  id: ID!
+  title: String!
+  episodeId: Int
+  director: String
+  releaseDate: String
+  openingCrawl: String
+  characters: [Character!]!
+  planets: [Planet!]!
+  starships: [Starship!]!
 }
