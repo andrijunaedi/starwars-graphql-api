@@ -8,6 +8,8 @@ Disusun oleh:
 - Glen Davis Kusuma
 - M Hanif AR
 
+Repositiry: https://github.com/andrijunaedi/starwars-graphql-api
+
 ## 🚀 Fitur
 
 - **GraphQL API** dengan schema yang lengkap dan type-safe
@@ -42,7 +44,7 @@ Disusun oleh:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/andrijunaedi/starwars-graphql-api
+git clone https://github.com/andrijunaedi/starwars-graphql-api.git
 cd starwars-graphql-api
 ```
 
