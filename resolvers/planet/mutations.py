@@ -42,3 +42,20 @@ def register_planet_mutations(mutation):
             return True
         finally:
             conn.close()
+
+    @mutation.field("createPlanet")
+    def resolve_create_planet(_, info, input):
+        conn = get_db_connection()
+        try:
+            conn.execute(
+                "INSERT INTO planets (name, climate, terrain) VALUES (?, ?, ?)",
+                (input["name"], input["climate"], input["terrain"]),
+            )
+            conn.commit()
+            new_planet = conn.execute("SELECT id, name, climate, terrain FROM planets WHERE name = ?", (input["name"],)).fetchone()
+            return dict(new_planet)
+        except sqlite3.IntegrityError:
+            conn.rollback()
+            raise Exception("Nama planet sudah digunakan.")
+        finally:
+            conn.close()
